@@ -1,1 +1,1 @@
-# auth_server
+# Mongodb Node example
