@@ -13,6 +13,7 @@ const tennisPlayerSchema = new mongoose.Schema({
     name: String,
     nationality: String,
     world_ranking_position: Number,
+    active: Boolean,
 });
 
 // The first argument of the model() method names the collection
@@ -21,9 +22,10 @@ const Player = mongoose.model('players', tennisPlayerSchema);
 
 // const createPlayer = async ()=> {
 // const player = new Player({
-//     name: 'Jannik Sinner',
-//     nationality: 'ITA',
-//     world_ranking_position: 15,
+//     name: 'Boris Becker',
+//     nationality: 'DE',
+//     // world_ranking_position: 500,
+//     active: false,
 // });
 
 
@@ -56,4 +58,24 @@ const getPlayers = async () => {
     console.log(players)
 }
 
+
 getPlayers();
+
+const getTop10Players = async () => {
+    const top10Players = await Player
+    .find({ world_ranking_position: {$lte: 10}})
+    .sort({name:1})
+    console.log(top10Players)
+}
+
+getTop10Players();
+
+// MongoDB comparison operators
+// eq (equal)
+// ne (not equal)
+// gt (greater than)
+// gte
+// lt
+// lte (less than or equal to)
+// in
+// nin (not in)
