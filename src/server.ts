@@ -61,15 +61,6 @@ const getPlayers = async () => {
 
 getPlayers();
 
-const getTop10Players = async () => {
-    const top10Players = await Player
-    .find({ world_ranking_position: {$lte: 10}})
-    .sort({name:1})
-    console.log(top10Players)
-}
-
-getTop10Players();
-
 // MongoDB comparison operators
 // eq (equal)
 // ne (not equal)
@@ -79,3 +70,24 @@ getTop10Players();
 // lte (less than or equal to)
 // in
 // nin (not in)
+
+const getTop10Players = async () => {
+    const top10Players = await Player
+    .find({ world_ranking_position: {$lte: 10}})
+    .sort({name:1})
+    console.log(top10Players)
+}
+
+getTop10Players();
+
+async function updatePlayerInactive(id: string) {
+    const result = await Player.updateOne({_id: id}, {
+        $set: {
+            active: false
+        }
+    });
+
+    console.log(result);
+}
+
+updatePlayerInactive('646782a234dbc2c0bedf785e'); // Rafael Nadal
