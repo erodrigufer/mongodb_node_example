@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+// import { Types } from "mongoose";
 import mongoose from "mongoose";
 
 
@@ -6,6 +6,9 @@ const db_url = "mongodb://localhost/example"
 mongoose.connect(db_url)
 .then(() => console.log('Connected to MongoDB...'))
 .catch((err) => console.error('Could not connect to MongoDB: ', err))
+
+// Available countries acronyms
+const CountriesList = [ 'SPA', 'DE', 'HR', 'CH', 'GB', 'AUS', 'ITA', 'ARG', 'RUS'];
 
 interface IPlayer{
     name: string;
@@ -19,35 +22,41 @@ interface IPlayer{
 // create further objects.
 const tennisPlayerSchema = new mongoose.Schema<IPlayer>({
     name: { type: String, required: true},
-    nationality: { type: String, required: true},
+    nationality: { 
+        type: String, 
+        // If country acronyms is not in array, validation will fail.
+        enum: CountriesList, 
+        required: true},
     world_ranking_position: { type: Number, required: false},
-    active: Boolean,
+    active: {
+        type: Boolean,
+        required: true,
+    }
 });
 
 // The first argument of the model() method names the collection
 // in which the object following this schema will be stored.
 const Player = mongoose.model('players', tennisPlayerSchema);
 
-// const createPlayer = async ()=> {
-// const player = new Player({
-//     name: 'Boris Becker',
-//     nationality: 'DE',
-//     // world_ranking_position: 500,
-//     active: false,
-// });
+const createPlayer = async ()=> {
+const player = new Player({
+    name: 'Juan Martin del Potro',
+    nationality: 'ARG',
+    active: false,
+});
 
 
-//     try{
-//     const result = await player.save();
-//     console.log('Stored player in DB. ', result)
-//     }
-//     catch (err){
-//         console.error(err)
-//     }
+    try{
+    const result = await player.save();
+    console.log('Stored player in DB. ', result)
+    }
+    catch (err){
+        console.error(err)
+    }
     
-// }
+}
 
-// createPlayer()
+createPlayer()
 
 const getAllPlayers = async () => {
     const players = await Player
@@ -88,14 +97,14 @@ const getTop10Players = async () => {
 
 getTop10Players();
 
-async function updatePlayerInactive(id: Types.ObjectId) {
-    const result = await Player.updateOne({_id: id}, {
-        $set: {
-            active: false
-        }
-    });
+// async function updatePlayerInactive(id: Types.ObjectId) {
+//     const result = await Player.updateOne({_id: id}, {
+//         $set: {
+//             active: false
+//         }
+//     });
 
-    console.log("Update Player active status: ", result);
-}
+//     console.log("Update Player active status: ", result);
+// }
 
-updatePlayerInactive(new Types.ObjectId('6467a2d46cea48979fa43f3f')); // Rafael Nadal
+// updatePlayerInactive(new Types.ObjectId('6467a2d46cea48979fa43f3f')); 
