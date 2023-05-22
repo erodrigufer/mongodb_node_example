@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 
+// 'example' is the name of the db within the local mongodb instance.
 const db_url = "mongodb://localhost/example"
 mongoose.connect(db_url)
 .then(() => console.log('Connected to MongoDB...'))
