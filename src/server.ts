@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import mongoose from "mongoose";
 
 
@@ -6,13 +7,20 @@ mongoose.connect(db_url)
 .then(() => console.log('Connected to MongoDB...'))
 .catch((err) => console.error('Could not connect to MongoDB: ', err))
 
+interface IPlayer{
+    name: string;
+    nationality: string;
+    world_ranking_position: number;
+    active?: boolean;
+}
+
 // First create a schema, then compile the schema with the
 // model() method to create a Class from which you can then
 // create further objects.
-const tennisPlayerSchema = new mongoose.Schema({
-    name: String,
-    nationality: String,
-    world_ranking_position: Number,
+const tennisPlayerSchema = new mongoose.Schema<IPlayer>({
+    name: { type: String, required: true},
+    nationality: { type: String, required: true},
+    world_ranking_position: { type: Number, required: false},
     active: Boolean,
 });
 
@@ -44,18 +52,18 @@ const Player = mongoose.model('players', tennisPlayerSchema);
 const getAllPlayers = async () => {
     const players = await Player
     .find()
-    console.log(players);
+    console.log("Get All players: ", players);
 }
 
 getAllPlayers();
 
 const getPlayers = async () => {
     const players = await Player
-    .find({nationality: 'SPA'})
+    .find({nationality: 'CH'})
     .limit(10)
     .sort({name: 1}) // Sort by name.
     .select({name: 1}); // Only display names.
-    console.log(players)
+    console.log("Get Swiss players: ", players)
 }
 
 
@@ -75,19 +83,19 @@ const getTop10Players = async () => {
     const top10Players = await Player
     .find({ world_ranking_position: {$lte: 10}})
     .sort({name:1})
-    console.log(top10Players)
+    console.log("Top 10 players: ", top10Players)
 }
 
 getTop10Players();
 
-async function updatePlayerInactive(id: string) {
+async function updatePlayerInactive(id: Types.ObjectId) {
     const result = await Player.updateOne({_id: id}, {
         $set: {
             active: false
         }
     });
 
-    console.log(result);
+    console.log("Update Player active status: ", result);
 }
 
-updatePlayerInactive('646782a234dbc2c0bedf785e'); // Rafael Nadal
+updatePlayerInactive(new Types.ObjectId('6467a2d46cea48979fa43f3f')); // Rafael Nadal
