@@ -22,13 +22,20 @@ interface IPlayer{
 // model() method to create a Class from which you can then
 // create further objects.
 const tennisPlayerSchema = new mongoose.Schema<IPlayer>({
-    name: { type: String, required: true},
+    name: { 
+        type: String, 
+        maxlength: 255,
+        required: true},
     nationality: { 
         type: String, 
         // If country acronyms is not in array, validation will fail.
         enum: CountriesList, 
         required: true},
-    world_ranking_position: { type: Number, required: false},
+    world_ranking_position: { 
+        type: Number, 
+        min: 1,
+        max: 2000,
+        required: false},
     active: {
         type: Boolean,
         required: true,
